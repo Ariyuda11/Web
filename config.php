@@ -1,17 +1,18 @@
 <?php
-// Konfigurasi database untuk Azure MySQL
-$host = getenv('DB_HOST') ?: 'localhost';
-$username = getenv('DB_USERNAME') ?: 'root';
-$password = getenv('DB_PASSWORD') ?: '';
-$database = getenv('DB_NAME') ?: 'logistik_db';
+$host = "localhost"; // atau Azure host jika di cloud
+$username = "root"; // atau username Azure
+$password = ""; // atau password Azure
+$database = "logistik_db"; // <- harus sama persis
 
 $conn = mysqli_init();
-mysqli_ssl_set($conn, NULL, NULL, NULL, NULL, NULL);
-mysqli_real_connect($conn, $host, $username, $password, $database, 3306, NULL, MYSQLI_CLIENT_SSL);
-
 if (!$conn) {
+    die('mysqli_init gagal');
+}
+
+// Pastikan parameter $database tidak dikosongkan
+mysqli_real_connect($conn, $host, $username, $password, $database);
+
+if (mysqli_connect_errno()) {
     die("Koneksi gagal: " . mysqli_connect_error());
 }
 
-mysqli_set_charset($conn, "utf8mb4");
-?>

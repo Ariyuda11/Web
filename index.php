@@ -2,7 +2,7 @@
 include 'config.php';
 
 // Query untuk mengambil semua data
-$sql = "SELECT * FROM transaksi ORDER BY id DESC";
+$sql = "SELECT * FROM transaksi ORDER BY id ASC";
 $result = mysqli_query($conn, $sql);
 ?>
 
