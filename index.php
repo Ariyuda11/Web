@@ -2,7 +2,7 @@
 include 'config.php';
 
 // Query untuk mengambil semua data
-$sql = "SELECT * FROM barang ORDER BY id DESC";
+$sql = "SELECT * FROM transaksi ORDER BY id DESC";
 $result = mysqli_query($conn, $sql);
 ?>
 
@@ -11,24 +11,25 @@ $result = mysqli_query($conn, $sql);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manajemen Logistik</title>
+    <title>Manajemen Keuangan</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h1>Sistem Manajemen Logistik</h1>
+        <h1>Sistem Manajemen Keuangan Ariyuda</h1>
         
         <div class="header-actions">
-            <a href="create.php" class="btn btn-primary">+ Tambah Barang</a>
+            <a href="create.php" class="btn btn-primary">Tambah Transaksi Baru</a>
         </div>
 
         <table>
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Nama Barang</th>
-                    <th>Tanggal Masuk</th>
-                    <th>Nama Vendor</th>
+                    <th>Tanggal</th>
+                    <th>Keterangan</th>
+                    <th>Jenis</th>
+                    <th>Nominal (Rp)</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
@@ -38,9 +39,10 @@ $result = mysqli_query($conn, $sql);
                     while($row = mysqli_fetch_assoc($result)) {
                         echo "<tr>";
                         echo "<td>" . $row['id'] . "</td>";
-                        echo "<td>" . htmlspecialchars($row['nama_barang']) . "</td>";
-                        echo "<td>" . date('d/m/Y', strtotime($row['tanggal_masuk'])) . "</td>";
-                        echo "<td>" . htmlspecialchars($row['nama_vendor']) . "</td>";
+                        echo "<td>" . date('d/m/Y', strtotime($row['tanggal_transaksi'])) . "</td>";
+                        echo "<td>" . htmlspecialchars($row['keterangan']) . "</td>";
+                        echo "<td>" . htmlspecialchars(ucfirst($row['jenis'])) . "</td>";
+                        echo "<td>" . number_format($row['nominal'], 0, ',', '.') . "</td>";
                         echo "<td class='action-buttons'>
                                 <a href='edit.php?id=" . $row['id'] . "' class='btn btn-edit'>Edit</a>
                                 <a href='delete.php?id=" . $row['id'] . "' class='btn btn-delete' onclick='return confirm(\"Yakin ingin menghapus?\")'>Hapus</a>
@@ -48,7 +50,7 @@ $result = mysqli_query($conn, $sql);
                         echo "</tr>";
                     }
                 } else {
-                    echo "<tr><td colspan='5' class='text-center'>Tidak ada data</td></tr>";
+                    echo "<tr><td colspan='6' class='text-center'>Tidak ada data</td></tr>";
                 }
                 ?>
             </tbody>

@@ -4,16 +4,14 @@ include 'config.php';
 $id = $_GET['id'];
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $nama_barang = mysqli_real_escape_string($conn, $_POST['nama_barang']);
-    $tanggal_masuk = mysqli_real_escape_string($conn, $_POST['tanggal_masuk']);
-    $nama_vendor = mysqli_real_escape_string($conn, $_POST['nama_vendor']);
-    
-    $sql = "UPDATE barang SET 
-            nama_barang='$nama_barang', 
-            tanggal_masuk='$tanggal_masuk', 
-            nama_vendor='$nama_vendor' 
-            WHERE id=$id";
-    
+    $tanggal = mysqli_real_escape_string($conn, $_POST['tanggal_transaksi']);
+    $keterangan = mysqli_real_escape_string($conn, $_POST['keterangan']);
+    $jenis = mysqli_real_escape_string($conn, $_POST['jenis']);
+    $nominal = mysqli_real_escape_string($conn, $_POST['nominal']);
+
+    $sql = "UPDATE transaksi SET tanggal_transaksi='$tanggal', keterangan='$keterangan',
+            jenis='$jenis', nominal='$nominal' WHERE id=$id";
+
     if (mysqli_query($conn, $sql)) {
         header("Location: index.php");
         exit();
@@ -22,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-$sql = "SELECT * FROM barang WHERE id=$id";
+$sql = "SELECT * FROM transaksi WHERE id=$id";
 $result = mysqli_query($conn, $sql);
 $row = mysqli_fetch_assoc($result);
 ?>
@@ -32,31 +30,34 @@ $row = mysqli_fetch_assoc($result);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Barang</title>
+    <title>Edit Transaksi</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h1>Edit Barang</h1>
-        
+        <h1>Edit Transaksi</h1>
         <?php if(isset($error)) echo "<p class='error'>$error</p>"; ?>
-        
         <form method="POST" action="">
             <div class="form-group">
-                <label>Nama Barang:</label>
-                <input type="text" name="nama_barang" value="<?php echo htmlspecialchars($row['nama_barang']); ?>" required>
+                <label>Tanggal:</label>
+                <input type="date" name="tanggal_transaksi" value="<?php echo $row['tanggal_transaksi']; ?>" required>
             </div>
-            
             <div class="form-group">
-                <label>Tanggal Masuk:</label>
-                <input type="date" name="tanggal_masuk" value="<?php echo $row['tanggal_masuk']; ?>" required>
+                <label>Keterangan:</label>
+                <input type="text" name="keterangan" value="<?php echo htmlspecialchars($row['keterangan']); ?>" required>
             </div>
-            
             <div class="form-group">
-                <label>Nama Vendor:</label>
-                <input type="text" name="nama_vendor" value="<?php echo htmlspecialchars($row['nama_vendor']); ?>" required>
+                <label>Jenis:</label>
+                <select name="jenis" required>
+                    <option value="">-- Pilih --</option>
+                    <option value="pemasukan" <?php if($row['jenis'] == "pemasukan") echo "selected"; ?>>Pemasukan</option>
+                    <option value="pengeluaran" <?php if($row['jenis'] == "pengeluaran") echo "selected"; ?>>Pengeluaran</option>
+                </select>
             </div>
-            
+            <div class="form-group">
+                <label>Nominal (Rp):</label>
+                <input type="number" name="nominal" min="0" value="<?php echo $row['nominal']; ?>" required>
+            </div>
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary">Update</button>
                 <a href="index.php" class="btn btn-secondary">Batal</a>
